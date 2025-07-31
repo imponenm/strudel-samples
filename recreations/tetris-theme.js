@@ -1,19 +1,14 @@
 // Define melody sections as arrays of strings
 const introMelody = [
-  "~ ~ ~ [e5 ~], ~ ~ ~ [b4 ~]",
+  "~ ~ ~ [e5 ~, b4 ~]",
   "e5 [b4 c5, g4 ~] d5 [c5 b4, a4 g4]",
-  "a4 [a4 c5] e5 [d5 c5]",
-  "b4 [b4 c5] d5 e5",
+  "[a4, e3] [a4 c5] e5 [d5 c5]",
+  "[b4 ,g#4] [[b4, g#4] [c5, a4]] [d5, b4] e5",
   "c5 a4 a4 ~",
   "[~ d5@2 f5 a5@2 g5 f5]",
   "[e5@3 c5 e5@2 d5 c5]",
   "b4 [b4 c5] d5 e5",
   "c5 a4 a4 ~"
-];
-
-const verseMelody = [
-  "e5 [b4 c5] d5 [c5 b4]",
-  "a4 [a4 c5] e5 [d5 c5]"
 ];
 
 // Define bassline sections similarly
@@ -29,10 +24,10 @@ const introBass = [
   "[a1 a2]*4"
 ];
 
-const bridgeMelody = introMelody.slice(1)
-const bridgeBass = introBass.slice(1);
+const chorusMelody = introMelody.slice(1)
+const chorusBass = introBass.slice(1);
 
-const chorusMelody = [
+const bridgeMelody = [
   "e4@2 c4@2",
   "d4@2 b3@2",
   "c4@2 a3@2",
@@ -43,7 +38,7 @@ const chorusMelody = [
   "<b4, e4, g#3>"
 ];
 
-const chorusBass = [
+const bridgeBass = [
   "[a1 a2]*4",
   "[g#1 g#2]*4",
   "[a1 a2]*4",
@@ -68,27 +63,44 @@ const fullDrums = cat(
 // Combine full sequences
 const fullMelody = cat(
   ...introMelody, 
-  ...bridgeMelody, 
-  ...chorusMelody,
-  ...bridgeMelody
+  ...chorusMelody, 
+  ...bridgeMelody,
+  ...chorusMelody
 ).note();
 
 const fullBass = cat(
   ...introBass, 
-  ...bridgeBass, 
-  ...chorusBass,
-  ...bridgeBass
+  ...chorusBass, 
+  ...bridgeBass,
+  ...chorusBass
 ).note();
 
-// Final pattern: stacked melody + bass
+// Treble cleff
 stack(
   stack(
     fullMelody
-  ).sound("pulse"),
+  )
+  .sound("square")
+  .clip(1)
+  .decay(0.1)
+  .sustain(0.2)
+  .release(0.2),
+
+  // Bass cleff
   stack(
     fullBass
-  ).sound("pulse").gain(0.8),
+  )
+  .sound("square").attack(0)
+  .decay(0.1)
+  .clip(1)
+  .sustain(0.2)
+  .release(0.2)
+  .gain(0.8),
+
+  // Drums
   stack(
     fullDrums
-  ).sound("white").clip(0.5).gain(0.4)
+  )
+  .sound("white").clip(0.5).gain(0.4)
+  
 ).cps(0.625);
