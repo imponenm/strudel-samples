@@ -1,7 +1,7 @@
 // Define melody sections as arrays of strings
 const introMelody = [
   "~ ~ ~ [e5 ~], ~ ~ ~ [b4 ~]",
-  "e5 [b4 c5] d5 [c5 b4]",
+  "e5 [b4 c5, g4 ~] d5 [c5 b4, a4 g4]",
   "a4 [a4 c5] e5 [d5 c5]",
   "b4 [b4 c5] d5 e5",
   "c5 a4 a4 ~",
@@ -54,6 +54,17 @@ const chorusBass = [
   "[e1 e2]*4"
 ]
 
+const drumLoop = [
+  "[~ white ~ white ~ [white white] ~ white]",
+  "[~ white ~ white ~ white white white]"
+];
+
+const fullDrums = cat(
+  "~",
+  ...Array(16).fill(drumLoop).flat(),  // repeat drumLoop 16 times
+).sound().clip(0.5).cps(0.625);
+
+
 // Combine full sequences
 const fullMelody = cat(
   ...introMelody, 
@@ -71,7 +82,13 @@ const fullBass = cat(
 
 // Final pattern: stacked melody + bass
 stack(
-  fullMelody,
-  fullBass
-).sound("sawtooth").cps(0.625);
-
+  stack(
+    fullMelody
+  ).sound("pulse"),
+  stack(
+    fullBass
+  ).sound("pulse").gain(0.8),
+  stack(
+    fullDrums
+  ).sound("white").clip(0.5).gain(0.4)
+).cps(0.625);
